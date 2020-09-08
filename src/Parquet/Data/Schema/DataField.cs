@@ -25,6 +25,14 @@ namespace Parquet.Data
       public bool IsArray { get; }
 
       /// <summary>
+      /// If type is FIXED_LEN_BYTE_ARRAY, this is the byte length of the vales.
+      /// Otherwise, if specified, this is the maximum bit length to store any of the values.
+      /// (e.g. a low cardinality INT col could have this set to 3).  Note that this is
+      /// in the schema, and therefore fixed for the entire file.
+      /// </summary>
+      public int? TypeLength { get; set; }
+
+      /// <summary>
       /// CLR type of this column. Not sure whether to expose this externally yet.
       /// </summary>
       internal Type ClrType { get; private set; }
@@ -36,7 +44,8 @@ namespace Parquet.Data
       /// </summary>
       /// <param name="name">Field name</param>
       /// <param name="clrType">CLR type of this field. The type is internally discovered and expanded into appropriate Parquet flags.</param>
-      public DataField(string name, Type clrType) 
+      /// <param name="typeLength">Type length</param>
+      public DataField(string name, Type clrType, int? typeLength = null) 
          : this(name,
               Discover(clrType).dataType,
               Discover(clrType).hasNulls,
@@ -52,11 +61,13 @@ namespace Parquet.Data
       /// <param name="dataType">Native Parquet type</param>
       /// <param name="hasNulls">When true, the field accepts null values. Note that nullable values take slightly more disk space comparing to non-nullable.</param>
       /// <param name="isArray">When true, each value of this field can have multiple values, similar to array in .NET</param>
-      public DataField(string name, DataType dataType, bool hasNulls = true, bool isArray = false) : base(name, SchemaType.Data)
+      /// <param name="typeLength">Type length</param>
+      public DataField(string name, DataType dataType, bool hasNulls = true, bool isArray = false, int? typeLength = null) : base(name, SchemaType.Data)
       {
          DataType = dataType;
          HasNulls = hasNulls;
          IsArray = isArray;
+         TypeLength = typeLength;
 
          MaxRepetitionLevel = isArray ? 1 : 0;
 

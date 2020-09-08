@@ -134,6 +134,7 @@ namespace Parquet.Data
          tse.Repetition_type = sef.IsArray
             ? Thrift.FieldRepetitionType.REPEATED
             : (sef.HasNulls ? Thrift.FieldRepetitionType.OPTIONAL : Thrift.FieldRepetitionType.REQUIRED);
+         if (sef.TypeLength != null) tse.Type_length = sef.TypeLength.Value;
          container.Add(tse);
          parent.Num_children += 1;
       }
