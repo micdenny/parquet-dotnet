@@ -49,7 +49,8 @@ namespace Parquet.Data
          : this(name,
               Discover(clrType).dataType,
               Discover(clrType).hasNulls,
-              Discover(clrType).isArray)
+              Discover(clrType).isArray,
+              typeLength)
       {
          //todo: calls to Discover() can be killed by making a constructor method
       }
