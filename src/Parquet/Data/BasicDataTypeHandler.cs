@@ -40,15 +40,16 @@ namespace Parquet.Data
 
          bool hasNulls = (tse.Repetition_type != Thrift.FieldRepetitionType.REQUIRED);
          bool isArray = (tse.Repetition_type == Thrift.FieldRepetitionType.REPEATED);
+         int? typeLength = tse.__isset.type_length ? tse.Type_length : (int?)null;
 
-         Field simple = CreateSimple(tse, hasNulls, isArray);
+         Field simple = CreateSimple(tse, hasNulls, isArray, typeLength);
          ownedChildCount = 0;
          return simple;
       }
 
-      protected virtual DataField CreateSimple(Thrift.SchemaElement tse, bool hasNulls, bool isArray)
+      protected virtual DataField CreateSimple(Thrift.SchemaElement tse, bool hasNulls, bool isArray, int? typeLength)
       {
-         return new DataField(tse.Name, DataType, hasNulls, isArray);
+         return new DataField(tse.Name, DataType, hasNulls, isArray, typeLength);
       }
 
       public virtual int Read(BinaryReader reader, Thrift.SchemaElement tse, Array dest, int offset)
